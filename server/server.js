@@ -1,4 +1,4 @@
-require("dotenv").config()
+require("dotenv").config({path: "../.env"})
 const express = require("express");
 const app = express();
 const port = 8080;
@@ -19,14 +19,14 @@ app.use(bodyParser.json());
 app.use(express.json());
 // app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",  // Allow only requests from this React app
+    origin: process.env.FRONTEND_URL,  // Allow only requests from this React app
   methods: ['GET', 'POST'],   
   credentials: true 
 }));
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // Ensure this matches your frontend URL
+        origin: process.env.FRONTEND_URL, // Ensure this matches your frontend URL
         methods: ["GET", "POST"],
     },
 })
