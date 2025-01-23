@@ -68,7 +68,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, setOutput }) => {
         try {
             setLoading(true)
             setOutput([])
-          const response = await axios.post('${BACKEND_URL}/run', {code}, {
+          const response = await axios.post(`${BACKEND_URL}/run`, {code}, {
             headers: { 'Content-Type': 'application/json' },
             withCredentials: true
           });
