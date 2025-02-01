@@ -1,5 +1,5 @@
 import {io} from "socket.io-client";
-import { BACKEND_URL } from "../constants/constant";
+// import { BACKEND_URL } from "../constants/constant";
 
 export const initSocket = async () => {
     const options = {
@@ -8,5 +8,5 @@ export const initSocket = async () => {
         timeout: 10000,
         transports: ['websocket'],
     };
-    return io(BACKEND_URL, options);
+    return io(import.meta.env.VITE_BACKEND_URL, options);
 };

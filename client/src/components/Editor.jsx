@@ -9,7 +9,7 @@ import 'codemirror/addon/edit/closebrackets'; // Addon for auto-closing brackets
 import 'codemirror/addon/edit/closetag'; 
 import axios from "axios"
 import toast from 'react-hot-toast';
-import { BACKEND_URL } from '../constants/constant';
+// import { BACKEND_URL } from '../constants/constant';
 
 
 const Editor = ({ socketRef, roomId, onCodeChange, setOutput }) => {
@@ -68,7 +68,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, setOutput }) => {
         try {
             setLoading(true)
             setOutput([])
-          const response = await axios.post(`${BACKEND_URL}/run`, {code}, {
+          const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/run`, {code}, {
             headers: { 'Content-Type': 'application/json' },
             withCredentials: true
           });
