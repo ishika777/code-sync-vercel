@@ -2,9 +2,19 @@ import React, { useState } from 'react';
 import { v4 as uuidV4 } from 'uuid';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+
 
 const Home = () => {
-    
+
     const navigate = useNavigate();
 
     const [roomId, setRoomId] = useState('');
@@ -37,52 +47,47 @@ const Home = () => {
         }
     };
     return (
-        <div className="homePageWrapper">
-            <div className="formWrapper">
-                <img
-                    className="homePageLogo"
-                    src="/code-sync.png"
-                    alt="code-sync-logo"
-                />
-                <h4 className="mainLabel">Paste invitation ROOM ID</h4>
-                <div className="inputGroup">
-                    <input
-                        type="text"
-                        className="inputBox"
-                        placeholder="ROOM ID"
-                        onChange={(e) => setRoomId(e.target.value)}
-                        value={roomId}
-                        onKeyUp={EnterButtonEvent}
-                    />
-                    <input
-                        type="text"
-                        className="inputBox"
-                        placeholder="USERNAME"
-                        onChange={(e) => setUsername(e.target.value)}
-                        value={username}
-                        onKeyUp={EnterButtonEvent}
-                    />
-                    <button className="btn joinBtn" onClick={joinRoom}>
-                        Join
-                    </button>
-                    <span className="createInfo">
-                        If you don't have an invite then create &nbsp;
-                        <a
-                            onClick={createNewRoom}
-                            href=""
-                            className="createNewBtn"
-                        >
-                            new room
-                        </a>
-                    </span>
-                </div>
-            </div>
-            <footer>
-                <h4>
-                    Built with 💛 &nbsp; by &nbsp;
-                    <a href="https://github.com/ishika777">Ishika</a>
-                </h4>
-            </footer>
+        <div className="flex items-center justify-center h-screen bg-gray-950 text-white">
+            <Card className="min-w-[400px] light">
+                <CardHeader>
+                    <CardTitle>
+                        <img src="/code-sync.png" width={200} alt="logo" />
+                    </CardTitle>
+                </CardHeader>
+                    <CardContent>
+                        <div className='flex flex-col gap-5'>
+                            <Input
+                                type="text"
+                                className="!bg-white !text-black font-semibold focus-visible:ring-0 border-none outline-none"
+                                placeholder="Room Id"
+                                onChange={(e) => setRoomId(e.target.value)}
+                                value={roomId}
+                                onKeyUp={EnterButtonEvent}
+                            />
+                            <Input
+                                type="text"
+                                className="!bg-white !text-black font-semibold focus-visible:ring-0 border-none outline-none"
+                                placeholder="Username"
+                                onChange={(e) => setUsername(e.target.value)}
+                                value={username}
+                                onKeyUp={EnterButtonEvent}
+                            />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <div className='flex flex-col gap-2 w-full'>
+                            <Button className="w-full text-lg !bg-green-400 hover:!bg-green-500" onClick={joinRoom}>
+                                Join
+                            </Button>
+                            <div className="flex items-center justify-center">
+                                <span className='text-md'>Don't have an invite link? &nbsp;</span>
+                                <p onClick={createNewRoom} className="text-green-400 cursor-pointer text-lg hover:text-green-500">
+                                    New Room
+                                </p>
+                            </div>
+                        </div>
+                    </CardFooter>
+            </Card>
         </div>
     );
 };

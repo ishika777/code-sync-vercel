@@ -9,7 +9,8 @@ import 'codemirror/addon/edit/closebrackets'; // Addon for auto-closing brackets
 import 'codemirror/addon/edit/closetag'; 
 import axios from "axios"
 import toast from 'react-hot-toast';
-// import { BACKEND_URL } from '../constants/constant';
+import { Button } from './ui/button';
+import { Loader, Play } from 'lucide-react';
 
 
 const Editor = ({ socketRef, roomId, onCodeChange, setOutput }) => {
@@ -85,20 +86,21 @@ const Editor = ({ socketRef, roomId, onCodeChange, setOutput }) => {
     
 
     return (
-        <>
-            <div className='editor-file-button'>
-                <span className='file-name'>Script.js</span>
+        <div className='flex flex-col w-full h-full'>
+            <div className='flex items-center justify-between my-1 h-8'>
+                <p className='text-black bg-gray-300 font-semibold ml-1 rounded-md p-1 px-3 align-middle'>Script.js</p>
                 {
                     loading ? (
-                        <button className='run-btn btn' style={{cursor: "not-allowed"}} disabled onClick={runCode}><i className="ri-loader-line"></i>Running...</button>
+                        <Button className='flex items-center justify-center mr-3 !text-white !bg-red-500' style={{cursor: "not-allowed"}} disabled onClick={runCode}><Loader className='animate-spin' />Running...</Button>
                     ) : (
 
-                        <button className='run-btn btn' onClick={runCode}>Run Code</button>
+                        <Button className='flex items-center justify-center mr-3 !text-white !bg-red-500' onClick={runCode}><Play /> Run Code</Button>
                     )
                 }
             </div>
-            <textarea id="realtimeEditor"></textarea>    
-        </>
+            
+        <textarea id="realtimeEditor"></textarea>    
+        </div>
     )
 };
 

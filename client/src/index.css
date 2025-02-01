@@ -1,15 +1,36 @@
 @import "tailwindcss";
 
+*{
+    overflow: hidden;
+}
 
-body {
-    margin: 0;
-    overflow: hidden;    
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-        'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-        'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background: #1c1e29;
+.output {
+    scroll-behavior: smooth;
+}
+.output::-webkit-scrollbar {
+    visibility: hidden;
+} 
+
+.terminal {
+    font-family: 'Courier New', Courier, monospace;
+}
+.terminal:active{
+    cursor: text;
+}
+ 
+.CodeMirror {
+    scroll-behavior: smooth;
+}
+.CodeMirror::-webkit-scrollbar{
+    visibility: hidden;
+}
+
+.clientsList {
+    scroll-behavior: smooth;
+}
+
+.clientsList::-webkit-scrollbar{
+    display: none;
 }
 
 @layer base {

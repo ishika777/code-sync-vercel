@@ -1,11 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation, useNavigate, Navigate, useParams} from 'react-router-dom';
+import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ACTIONS from '../config/Actions';
 import Client from '../components/Client';
 import Editor from '../components/Editor';
 import Terminal from "../components/Terminal"
 import { initSocket } from "../config/socket";
+import { Button } from '@/components/ui/button';
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable"
+
 
 // while(true){
 //     console.log("h");
@@ -47,26 +54,26 @@ const EditorPage = () => {
 
             // Listening for joined event
             socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
-                    if (username !== location.state?.username) {
-                        toast.success(`${username} joined the room.`);
-                    }
-                    setClients(clients);
-                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
-                        code: codeRef.current,
-                        socketId,
-                    });
+                if (username !== location.state?.username) {
+                    toast.success(`${username} joined the room.`);
                 }
+                setClients(clients);
+                socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                    code: codeRef.current,
+                    socketId,
+                });
+            }
             );
 
             // Listening for disconnected
-            socketRef.current.on(ACTIONS.DISCONNECTED,({ socketId, username }) => {
-                    toast.success(`${username} left the room.`);
-                    setClients((prev) => {
-                        return prev.filter(
-                            (client) => client.socketId !== socketId
-                        );
-                    });
-                }
+            socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
+                toast.success(`${username} left the room.`);
+                setClients((prev) => {
+                    return prev.filter(
+                        (client) => client.socketId !== socketId
+                    );
+                });
+            }
             );
         };
         init();
@@ -92,19 +99,20 @@ const EditorPage = () => {
     }
 
     return (
-        <div className="mainWrap">
-            <div className="aside">
-                <div className="asideInner">
-                    <div className="logo">
-                        <img
-                            className="logoImage"
-                            src="/code-sync.png"
-                            alt="logo"
-                        />
-                    </div>
-                    <h3>Connected</h3>
-                    <div className='contentWrapper'>
-                        <div className="clientsList">
+        <div className="flex h-screen">
+            <div className="w-[230px] h-screen bg-gray-900 text-white p-3">
+
+                <div className="flex flex-col h-screen relative">
+                    <img
+                        className="pb-3"
+                        width={150}
+                        src="/code-sync.png"
+                        alt="logo"
+                    />
+                    <h3 className='font-semibold text-lg pb-3'>Connected Users</h3>
+
+                    <div className='flex flex-1 overflow-auto flex-col justify-between gap-5'>
+                        <div className="clientsList overflow-auto flex flex-1 items-start justify-start flex-wrap gap-4">
                             {clients.map((client) => (
                                 <Client
                                     key={client.socketId}
@@ -112,28 +120,36 @@ const EditorPage = () => {
                                 />
                             ))}
                         </div>
-                        <div className='buttonWrapper'>
-                            <button className="btn copyBtn" onClick={copyRoomId}>
+                        <div className='flex flex-col justify-end mb-5 w-full gap-2'>
+                            <Button className="!bg-green-400 w-full hover:!bg-green-500" onClick={copyRoomId}>
                                 Copy ROOM ID
-                            </button>
-                            <button className="btn leaveBtn" onClick={leaveRoom}>
+                            </Button>
+                            <Button className="!bg-green-400 w-full hover:!bg-green-500" onClick={leaveRoom}>
                                 Leave
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
-            <div className="editorWrap">
-                <Editor
-                    socketRef={socketRef}
-                    roomId={roomId}
-                    onCodeChange={(code) => {
-                        codeRef.current = code;
-                    }}
-                    setOutput={setOutput}
-                />
-                <Terminal output={output} />
+            <div className="flex flex-1 h-screen flex-col">
+                <ResizablePanelGroup direction="vertical" className="h-full w-full">
+                    <ResizablePanel defaultSize={70} maxSize={90} className='h-full'>
+                        <Editor
+                            socketRef={socketRef}
+                            roomId={roomId}
+                            onCodeChange={(code) => {
+                                codeRef.current = code;
+                            }}
+                            setOutput={setOutput}
+                        />
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={30} minSize={10} className='h-full'>
+                        <Terminal output={output} />
+                    </ResizablePanel>
+                </ResizablePanelGroup>
+
             </div>
 
         </div>
