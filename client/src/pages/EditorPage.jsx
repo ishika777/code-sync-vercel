@@ -23,6 +23,7 @@ import AiComponent from '@/components/AiComponent';
 const EditorPage = () => {
     const socketRef = useRef(null);
     const codeRef = useRef(null);
+    const editorRef = useRef(null);
 
     const [output, setOutput] = useState([]);
 
@@ -99,8 +100,12 @@ const EditorPage = () => {
         return <Navigate to="/" />;
     }
 
+    const onCodeChange= (code) => {
+        codeRef.current = code;
+    }
+
     return (
-        <div className="flex h-screen">
+        <div className="flex max-w-screen max-h-screen overflow-hidden">
             <div className="w-[230px] h-screen bg-gray-900 text-white p-3">
 
                 <div className="flex flex-col h-screen relative">
@@ -134,15 +139,15 @@ const EditorPage = () => {
 
             </div>
             <div className="flex flex-1 h-screen flex-col relative">
-                <ResizablePanelGroup direction="vertical" className="h-full w-full">
+                <ResizablePanelGroup direction="vertical" className="h-full w-full overflow-hidden">
                     <ResizablePanel defaultSize={100} minSize={50} className='h-full'>
                         <EditorComponent
                             socketRef={socketRef}
                             roomId={roomId}
-                            onCodeChange={(code) => {
-                                codeRef.current = code;
-                            }}
+                            onCodeChange={onCodeChange}
                             setOutput={setOutput}
+                            editorRef={editorRef}
+                            
                         />
                     </ResizablePanel>
                     <ResizableHandle
@@ -159,7 +164,7 @@ const EditorPage = () => {
             </div>
 
             <div className='absolute bottom-4 right-4'>
-            <AiComponent />
+            <AiComponent editorRef={editorRef}  onCodeChange={onCodeChange}/>
             </div>
 
         </div>

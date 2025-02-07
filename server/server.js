@@ -9,7 +9,8 @@ const {Server} = require("socket.io");
 const ACTIONS = require("./Actions");
 const bodyParser = require("body-parser")
 const cors = require("cors")
-const router = require("./routes/run-router")
+const runRouter = require("./routes/run-router")
+const aiRouter = require("./routes/ai.route")
 const path = require("path")
 
 const DIRNAME = path.resolve()
@@ -83,7 +84,8 @@ io.on("connection", (socket) => {
         socket.leave()
     })
 })
-app.use("/", router)
+app.use("/", runRouter)
+app.use("/", aiRouter)
 
 app.use(express.static(path.join(DIRNAME, "client/dist")))
 app.get("*", (_, res) => {

@@ -19,29 +19,28 @@ import Editor from '@monaco-editor/react';
 
 
 
-const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput }) => {
-    const editorRef = useRef(null);
+const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef }) => {
     const [loading, setLoading] = useState(false);
 
     function handleEditorDidMount(editor, monaco) {
         editorRef.current = editor;
         editor.focus(); // Force cursor visibility
-        editor.layout();    
+        editor.layout();
 
-      }
+    }
 
-      function handleEditorChange(value, event) {
+    function handleEditorChange(value, event) {
         onCodeChange(value);
         socketRef.current.emit(ACTIONS.CODE_CHANGE, {
             roomId,
             value,
         });
-      }
+    }
 
     // useEffect(() => {
     //     async function init() {
     //         // const textarea = document.getElementById('realtimeEditor');
-            
+
     //         // editorRef.current = Codemirror.fromTextArea(textarea,{
     //         //     lineNumbers: true,
     //         //         mode: { name: 'javascript', json: true },
@@ -82,30 +81,30 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput }) => {
         };
     }, [socketRef.current]);
 
-    const runCode = async() => {
+    const runCode = async () => {
         const code = editorRef.current.getValue();
-        if(code.length === 0){
+        if (code.length === 0) {
             toast.error("Type some code!")
             return;
         }
         try {
             setLoading(true)
             setOutput([])
-          const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/run`, {code}, {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true
-          });
-          
-          setOutput(response.data)
-          setLoading(false)
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/run`, { code }, {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true
+            });
+
+            setOutput(response.data)
+            setLoading(false)
         } catch (error) {
             setLoading(false)
-          console.log(`Error: ${error}`);
-        }finally{
+            console.log(`Error: ${error}`);
+        } finally {
             setLoading(false)
         }
     };
-    
+
 
     return (
         <div className='flex flex-col w-full h-full'>
@@ -113,7 +112,7 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput }) => {
                 <p className='text-black bg-gray-300 font-semibold ml-1 rounded-md p-1 px-3 align-middle'>Script.js</p>
                 {
                     loading ? (
-                        <Button className='flex items-center justify-center mr-3 !text-white !bg-red-500' style={{cursor: "not-allowed"}} disabled onClick={runCode}><Loader className='animate-spin' />Running...</Button>
+                        <Button className='flex items-center justify-center mr-3 !text-white !bg-red-500' style={{ cursor: "not-allowed" }} disabled onClick={runCode}><Loader className='animate-spin' />Running...</Button>
                     ) : (
 
                         <Button className='flex items-center justify-center mr-3 !text-white !bg-red-500' onClick={runCode}><Play /> Run Code</Button>
@@ -122,24 +121,24 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput }) => {
             </div>
             <div style={{ height: "100%", width: "100%", display: "block" }}>
 
-            <Editor
-                height="100%"
-                defaultLanguage="javascript"
-                defaultValue="// some comment"
-                onMount={handleEditorDidMount}
-                onChange={handleEditorChange}
-                theme="vs-dark"  // Set dark theme
-                options={{
-                    cursorBlinking: "smooth",
-                    cursorStyle: "line",
-                    cursorWidth: 2,  // Use a number, not a string
-                    fontSize: 16,
-                    lineNumbers: "on",
-                    minimap: { enabled: false },
-                    automaticLayout: true
-                }}
-            />
-</div>
+                <Editor
+                    height="100%"
+                    defaultLanguage="javascript"
+                    defaultValue="// some comment"
+                    onMount={handleEditorDidMount}
+                    onChange={handleEditorChange}
+                    theme="vs-dark"  // Set dark theme
+                    options={{
+                        cursorBlinking: "smooth",
+                        cursorStyle: "line",
+                        cursorWidth: 2,  // Use a number, not a string
+                        fontSize: 16,
+                        lineNumbers: "on",
+                        minimap: { enabled: false },
+                        automaticLayout: true
+                    }}
+                />
+            </div>
 
             {/* <textarea id="realtimeEditor"></textarea>     */}
         </div>

@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-*{
-    overflow: hidden;
-}
-
 .output {
     scroll-behavior: smooth;
 }
@@ -34,10 +30,22 @@
     background: white !important;
 }
 
+input:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
 
 
 
 
+.message-box {
+    scroll-behavior: smooth;
+}
+
+.message-box::-webkit-scrollbar{
+    display: none;
+}
 .clientsList {
     scroll-behavior: smooth;
 }
