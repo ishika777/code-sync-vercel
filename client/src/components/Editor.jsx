@@ -1,50 +1,72 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ACTIONS from '../config/Actions';
-import Codemirror from "codemirror"
-import 'codemirror/lib/codemirror.css'; 
-import 'codemirror/theme/dracula.css'; // Dracula theme
-import 'codemirror/mode/javascript/javascript'; // JavaScript mode
-import 'codemirror/addon/edit/matchbrackets'; // Addon for bracket matching
-import 'codemirror/addon/edit/closebrackets'; // Addon for auto-closing brackets
-import 'codemirror/addon/edit/closetag'; 
 import axios from "axios"
 import toast from 'react-hot-toast';
 import { Button } from './ui/button';
 import { Loader, Play } from 'lucide-react';
 
+// import Codemirror from "codemirror"
+// import 'codemirror/lib/codemirror.css'; 
+// import 'codemirror/theme/dracula.css'; 
+// import 'codemirror/mode/javascript/javascript';
+// import 'codemirror/addon/edit/matchbrackets'; 
+// import 'codemirror/addon/edit/closebrackets';
+// import 'codemirror/addon/edit/closetag';
 
-const Editor = ({ socketRef, roomId, onCodeChange, setOutput }) => {
+
+import Editor from '@monaco-editor/react';
+
+
+
+
+const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput }) => {
     const editorRef = useRef(null);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        async function init() {
-            editorRef.current = Codemirror.fromTextArea(document.getElementById('realtimeEditor'),{
-                    mode: { name: 'javascript', json: true },
-                    theme: 'dracula',
-                    autoCloseTags: true,
-                    autoCloseBrackets: true,
-                    lineNumbers: true,
-                    autocorrect: true,
-                    
-                }
-            );
-            editorRef.current.on('change', (instance, changes) => {
-                const { origin } = changes;
-                const code = instance.getValue();
-                onCodeChange(code);
-                if (origin !== 'setValue') {
-                    socketRef.current.emit(ACTIONS.CODE_CHANGE, {
-                        roomId,
-                        code,
-                    });
-                }
-            });
-            return () => { editorRef.current.destroy() };
-        }
+    function handleEditorDidMount(editor, monaco) {
+        editorRef.current = editor;
+        editor.focus(); // Force cursor visibility
+        editor.layout();    
 
-        init();
-    }, []);
+      }
+
+      function handleEditorChange(value, event) {
+        onCodeChange(value);
+        socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+            roomId,
+            value,
+        });
+      }
+
+    // useEffect(() => {
+    //     async function init() {
+    //         // const textarea = document.getElementById('realtimeEditor');
+            
+    //         // editorRef.current = Codemirror.fromTextArea(textarea,{
+    //         //     lineNumbers: true,
+    //         //         mode: { name: 'javascript', json: true },
+    //         //         theme: 'dracula',
+    //         //         autoCloseTags: true,
+    //         //         autoCloseBrackets: true,
+    //         //         autocorrect: true,
+    //         //     }
+    //         // );
+    //         // editorRef.current.on('change', (instance, changes) => {
+    //         //     const { origin } = changes;
+    //         //     const code = instance.getValue();
+    //             // onCodeChange(code);
+    //             // if (origin !== 'setValue') {
+    //             //     socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+    //             //         roomId,
+    //             //         code,
+    //             //     });
+    //             // }
+    //         // });
+    //         // return () => { editorRef.current.destroy() };
+    //     }
+
+    //     init();
+    // }, []);
 
     useEffect(() => {
         if (socketRef.current) {
@@ -98,10 +120,30 @@ const Editor = ({ socketRef, roomId, onCodeChange, setOutput }) => {
                     )
                 }
             </div>
-            
-        <textarea id="realtimeEditor"></textarea>    
+            <div style={{ height: "100%", width: "100%", display: "block" }}>
+
+            <Editor
+                height="100%"
+                defaultLanguage="javascript"
+                defaultValue="// some comment"
+                onMount={handleEditorDidMount}
+                onChange={handleEditorChange}
+                theme="vs-dark"  // Set dark theme
+                options={{
+                    cursorBlinking: "smooth",
+                    cursorStyle: "line",
+                    cursorWidth: 2,  // Use a number, not a string
+                    fontSize: 16,
+                    lineNumbers: "on",
+                    minimap: { enabled: false },
+                    automaticLayout: true
+                }}
+            />
+</div>
+
+            {/* <textarea id="realtimeEditor"></textarea>     */}
         </div>
     )
 };
 
-export default Editor;
+export default EditorComponent;

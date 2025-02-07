@@ -17,13 +17,26 @@
 .terminal:active{
     cursor: text;
 }
- 
+
 .CodeMirror {
+    height: 100% !important;
+    padding: 0;
     scroll-behavior: smooth;
 }
-.CodeMirror::-webkit-scrollbar{
-    visibility: hidden;
+
+
+
+
+
+.monaco-editor .cursor {
+    display: block !important;
+    width: 2px !important;
+    background: white !important;
 }
+
+
+
+
 
 .clientsList {
     scroll-behavior: smooth;

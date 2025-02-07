@@ -3,7 +3,7 @@ import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast';
 import ACTIONS from '../config/Actions';
 import Client from '../components/Client';
-import Editor from '../components/Editor';
+import EditorComponent from '../components/Editor';
 import Terminal from "../components/Terminal"
 import { initSocket } from "../config/socket";
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
+import AiComponent from '@/components/AiComponent';
 
 
 // while(true){
@@ -132,10 +133,10 @@ const EditorPage = () => {
                 </div>
 
             </div>
-            <div className="flex flex-1 h-screen flex-col">
+            <div className="flex flex-1 h-screen flex-col relative">
                 <ResizablePanelGroup direction="vertical" className="h-full w-full">
-                    <ResizablePanel defaultSize={70} maxSize={90} className='h-full'>
-                        <Editor
+                    <ResizablePanel defaultSize={100} minSize={50} className='h-full'>
+                        <EditorComponent
                             socketRef={socketRef}
                             roomId={roomId}
                             onCodeChange={(code) => {
@@ -144,12 +145,21 @@ const EditorPage = () => {
                             setOutput={setOutput}
                         />
                     </ResizablePanel>
-                    <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={30} minSize={10} className='h-full'>
+                    <ResizableHandle
+                        withHandle
+                        className="w-[5px] bg-gray-500 hover:bg-gray-700 cursor-row-resize"
+                    />
+
+                    <ResizablePanel defaultSize={0} maxSize={50} className='h-full'>
                         <Terminal output={output} />
                     </ResizablePanel>
                 </ResizablePanelGroup>
 
+
+            </div>
+
+            <div className='absolute bottom-4 right-4'>
+            <AiComponent />
             </div>
 
         </div>
