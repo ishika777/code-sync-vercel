@@ -69,7 +69,6 @@ io.on("connection", (socket) => {
     
     
     socket.on(ACTIONS.SYNC_CODE, ({code, socketId}) => {
-        console.log("sync", code)
         io.to(socketId).emit(ACTIONS.CODE_UPDATE, {code})
     })
 

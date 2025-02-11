@@ -6,7 +6,6 @@ const axios = require('axios');
 module.exports = runCode = async(req, res) => {
     try {
         const {code, langId} = req.body;
-        console.log(langId)
         const response = await axios.post(JUDGE0_API_URL, {
           language_id: langId, 
           source_code: code,

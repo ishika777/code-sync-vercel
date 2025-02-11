@@ -39,10 +39,6 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
     }
 
     useEffect(() => {
-        console.log(language)
-    }, [])
-
-    useEffect(() => {
         if (!editorRef.current) return;
 
         let boilerplate = "";
@@ -55,7 +51,7 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
         }
 
         editorRef.current.setValue(boilerplate);
-    }, [language, editorRef.current]);
+    }, []);
 
     useEffect(() => {
         if (!socketRef.current) {
@@ -69,6 +65,7 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
             socketRef.current.off(ACTIONS.CODE_UPDATE);
         };
     }, [socketRef.current]);
+    
 
      const runCode = async () => {
         const code = editorRef.current.getValue();

@@ -28,7 +28,7 @@ const EditorPage = () => {
     const editorRef = useRef(null);
 
     const [output, setOutput] = useState([]);
-    const [code, setCode] = useState("");
+    const [code, setCode] = useState(editorRef.current?.getValue());
     const terminalPanelRef = useRef(null);
     
 
@@ -75,13 +75,12 @@ const EditorPage = () => {
             socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
                 if (username !== location.state?.username) {
                     toast.success(`${username} joined the room.`);
+                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                        code: editorRef.current.getValue(),
+                        socketId,
+                    });
                 }
                 setClients(clients);
-                // console.log(code)
-                socketRef.current.emit(ACTIONS.SYNC_CODE, {
-                    code,
-                    socketId,
-                });
             }
             );
 
