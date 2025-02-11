@@ -54,12 +54,27 @@ const AiComponent = ({ editorRef, onCodeChange }) => {
                 const data = JSON.parse(response.data.result)
                 setMessages((prev) => [...prev, { sender: "AI", prompt: data.text }]);
                 if (data.code) {
-                    console.log(data.code)
-                    // const updatedCode = codeRef.current + "\n\n" + data.code;
-                    // console.log(updatedCode)
-                    // codeRef.current = updatedCode;
-                    // onCodeChange(updatedCode);
+                    const editor = editorRef.current;
+                    const oldCode = editor.getValue();
+                    const updatedCode = oldCode + "\n\n" + data.code;
+                
+                    editor.setValue(updatedCode);
+                    onCodeChange(updatedCode);
+                
+                    // Get the position of the newly added code
+                    const lines = oldCode.split("\n").length + 1; // Start line of new code
+                    const newLines = data.code.split("\n").length; // Number of new lines
+                    const lastLine = lines + newLines - 1; // Last line of new code
+                
+                    // Select the newly added code
+                    editor.setSelection({
+                        startLineNumber: lines,
+                        startColumn: 1,
+                        endLineNumber: lastLine,
+                        endColumn: data.code.length, // Select full new code
+                    });
                 }
+                
             }
 
         } catch (error) {
