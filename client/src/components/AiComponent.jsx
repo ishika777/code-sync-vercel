@@ -47,7 +47,7 @@ const AiComponent = ({ editorRef, onCodeChange }) => {
             setLoading(true);
             setMessages((prev) => [...prev, { sender: "User", prompt }]);
             setPrompt("");
-            const response = await axios.post(`http://localhost:8080/ask-ai`, { prompt }, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/ask-ai`, { prompt }, {
                 headers: {
                     "Content-Type": "application/json"
                 }
