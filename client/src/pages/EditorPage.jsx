@@ -20,6 +20,8 @@ import AiComponent from '@/components/AiComponent';
 //   }
 // status
 
+// take input and interact
+
 const EditorPage = () => {
     const socketRef = useRef(null);
     // const codeRef = useRef(null);
@@ -29,6 +31,7 @@ const EditorPage = () => {
     const [code, setCode] = useState("");
     const [terminalSize, setTerminalSize] = useState(0);
     const terminalPanelRef = useRef(null);
+    
 
     
 
@@ -48,6 +51,8 @@ const EditorPage = () => {
             terminalPanelRef.current.resize(50);
         }
     }, [output]);
+
+    
 
     useEffect(() => {
         const init = async () => {
@@ -73,7 +78,7 @@ const EditorPage = () => {
                     toast.success(`${username} joined the room.`);
                 }
                 setClients(clients);
-                console.log(code)
+                // console.log(code)
                 socketRef.current.emit(ACTIONS.SYNC_CODE, {
                     code,
                     socketId,
@@ -161,7 +166,6 @@ const EditorPage = () => {
                             onCodeChange={onCodeChange}
                             setOutput={setOutput}
                             editorRef={editorRef}
-                            
                         />
                     </ResizablePanel>
                     <ResizableHandle

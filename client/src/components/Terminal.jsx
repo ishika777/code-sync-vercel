@@ -8,9 +8,7 @@ const Terminal = ({ output }) => {
             <div className="output h-full p-3 text-white overflow-auto text-lg">
             {
                     output.stderr && (
-                        output.stderr.split('\n').map((line) =>
-                            line.startsWith('/box/script.js') ? 'File: Script.js' : line // Replace the line
-                        ).map((line, index) => (
+                        output.stderr.split('\n').map((line, index) => (
                             <div
                                 className="!text-red-500 font-semibold text-sm"
                                 key={index}

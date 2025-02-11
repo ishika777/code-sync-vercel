@@ -18,6 +18,19 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState("");
     const [language, setLanguage] = useState('javascript');
+    
+    const langCode = {
+        "javascript": 63,
+        "python": 71,
+        "java": 62
+    }
+    const filename = {
+        "javascript": "script.js",
+        "python": "script.py",
+        "java": "main.java"
+    }
+    
+    
 
 
     function handleEditorChange(code) {
@@ -28,6 +41,25 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
             code: code,
         });
     }
+
+    useEffect(() => {
+        console.log(language)
+    }, [])
+
+    useEffect(() => {
+        if (!editorRef.current) return;
+
+        let boilerplate = "";
+        if (language === "java") {
+            boilerplate = `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}`;
+        } else if (language === "python") {
+            boilerplate = `print("Hello, World!")`;
+        } else if (language === "javascript") {
+            boilerplate = `console.log("Hello, World!");`;
+        }
+
+        editorRef.current.setValue(boilerplate);
+    }, [language, editorRef.current]);
 
     useEffect(() => {
         if (!socketRef.current) {
@@ -51,7 +83,7 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
         try {
             setLoading(true)
             setOutput([])
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/run`, { code }, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/run`, { code, langId: langCode[language] }, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             });
@@ -68,7 +100,9 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
     return (
         <div className='flex flex-col w-full h-full'>
             <div className='flex items-center justify-between my-1 h-8'>
-                <p className='text-black bg-gray-300 font-semibold ml-1 rounded-md p-1 px-3 align-middle'>Script.js</p>
+                <p className='text-black bg-gray-300 font-semibold ml-1 rounded-md p-1 px-3 align-middle'>
+                    {filename[language]}
+                </p>
                 <Select value={language} onValueChange={setLanguage}>   
                     <SelectTrigger className="w-[140px] h-8 !text-white outline-none border-none !focus:ring-0 !focus:border-transparent">
                         <SelectValue placeholder="Theme" />
@@ -84,7 +118,6 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
                     loading ? (
                         <Button className='flex items-center justify-center mr-3 h-8 !text-white !bg-red-500' style={{ cursor: "not-allowed" }} disabled onClick={runCode}><Loader className='animate-spin' />Running...</Button>
                     ) : (
-
                         <Button className='flex items-center justify-center mr-3 h-8 !text-white !bg-red-500' onClick={runCode}><Play /> Run Code</Button>
                     )
                 }
@@ -97,6 +130,7 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
                     value={code}
                     onMount={(editor) => {
                         editorRef.current = editor; // Store editor instance
+                        editorRef.current.setValue(`console.log("Hello, World!");`)
                     }}
                     onChange={handleEditorChange}
                     theme="vs-dark"

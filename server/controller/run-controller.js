@@ -5,9 +5,10 @@ const axios = require('axios');
  
 module.exports = runCode = async(req, res) => {
     try {
-        const {code} = req.body;
+        const {code, langId} = req.body;
+        console.log(langId)
         const response = await axios.post(JUDGE0_API_URL, {
-          language_id: 63, // JavaScript 
+          language_id: langId, 
           source_code: code,
         }, {
             headers: {
@@ -19,9 +20,9 @@ module.exports = runCode = async(req, res) => {
     
         // Send back the result
         res.json({
-          stdout: response.data.stdout,
-          stderr: response.data.stderr,
-          status: response.data.status.description
+            stdout: response.data.stdout,
+            stderr: response.data.stderr,
+            status: response.data.status.description
         });
       } catch (error) {
         console.log(error.message)
