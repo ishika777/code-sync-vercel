@@ -24,6 +24,8 @@ const AiComponent = ({ editorRef, onCodeChange }) => {
 
     const messageBox = useRef(null);
     const [loading, setLoading] = useState(false)
+        const [isOpen, setIsOpen] = useState(false)
+    
     const [messages, setMessages] = useState([
         { sender: 'AI', prompt: 'Hello! How may I assist you today?' },
     ]);
@@ -54,6 +56,7 @@ const AiComponent = ({ editorRef, onCodeChange }) => {
                 const data = JSON.parse(response.data.result)
                 setMessages((prev) => [...prev, { sender: "AI", prompt: data.text }]);
                 if (data.code) {
+                    setIsOpen(false)
                     const editor = editorRef.current;
                     const oldCode = editor.getValue();
                     const updatedCode = oldCode + "\n\n" + data.code;
@@ -64,7 +67,7 @@ const AiComponent = ({ editorRef, onCodeChange }) => {
                     // Get the position of the newly added code
                     const lines = oldCode.split("\n").length + 1; // Start line of new code
                     const newLines = data.code.split("\n").length; // Number of new lines
-                    const lastLine = lines + newLines - 1; // Last line of new code
+                    const lastLine = lines + newLines; // Last line of new code
                 
                     // Select the newly added code
                     editor.setSelection({
@@ -94,7 +97,7 @@ const AiComponent = ({ editorRef, onCodeChange }) => {
 
     return (
         <div>
-            <Popover>
+            <Popover open={isOpen} onOpenChange={setIsOpen}>
                 <PopoverTrigger asChild>
                     <Button className="rounded-full px-2 h-fit"><MessageCircle size={44} strokeWidth={3} /></Button>
                 </PopoverTrigger>

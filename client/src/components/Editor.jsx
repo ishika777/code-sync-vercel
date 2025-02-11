@@ -4,7 +4,6 @@ import axios from "axios"
 import toast from 'react-hot-toast';
 import { Button } from './ui/button';
 import { Loader, Play } from 'lucide-react';
-
 import {
     Select,
     SelectContent,
@@ -29,9 +28,6 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
         "python": "script.py",
         "java": "main.java"
     }
-    
-    
-
 
     function handleEditorChange(code) {
         onCodeChange(code);
@@ -138,7 +134,7 @@ const EditorComponent = ({ socketRef, roomId, onCodeChange, setOutput, editorRef
                         cursorBlinking: "smooth",
                         cursorStyle: "line",
                         cursorWidth: 2,
-                        fontSize: 14,
+                        fontSize: 12,
                         lineNumbers: "on",
                         minimap: { enabled: false },
                         automaticLayout: true

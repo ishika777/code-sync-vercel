@@ -29,7 +29,6 @@ const EditorPage = () => {
 
     const [output, setOutput] = useState([]);
     const [code, setCode] = useState("");
-    const [terminalSize, setTerminalSize] = useState(0);
     const terminalPanelRef = useRef(null);
     
 
