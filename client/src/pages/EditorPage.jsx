@@ -22,10 +22,15 @@ import AiComponent from '@/components/AiComponent';
 
 const EditorPage = () => {
     const socketRef = useRef(null);
-    const codeRef = useRef(null);
+    // const codeRef = useRef(null);
     const editorRef = useRef(null);
 
     const [output, setOutput] = useState([]);
+    const [code, setCode] = useState("");
+    const [terminalSize, setTerminalSize] = useState(0);
+    const terminalPanelRef = useRef(null);
+
+    
 
     const location = useLocation();
     const { roomId } = useParams();
@@ -37,9 +42,18 @@ const EditorPage = () => {
 
     const [clients, setClients] = useState([]);
 
+
+    useEffect(() => {
+        if (terminalPanelRef.current) {
+            terminalPanelRef.current.resize(50);
+        }
+    }, [output]);
+
     useEffect(() => {
         const init = async () => {
+
             socketRef.current = await initSocket();
+
             socketRef.current.on('connect_error', (err) => handleErrors(err));
             socketRef.current.on('connect_failed', (err) => handleErrors(err));
 
@@ -54,14 +68,14 @@ const EditorPage = () => {
                 username: location.state?.username,
             });
 
-            // Listening for joined event
             socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
                 if (username !== location.state?.username) {
                     toast.success(`${username} joined the room.`);
                 }
                 setClients(clients);
+                console.log(code)
                 socketRef.current.emit(ACTIONS.SYNC_CODE, {
-                    code: codeRef.current,
+                    code,
                     socketId,
                 });
             }
@@ -101,7 +115,7 @@ const EditorPage = () => {
     }
 
     const onCodeChange= (code) => {
-        codeRef.current = code;
+        setCode(code);
     }
 
     return (
@@ -154,8 +168,7 @@ const EditorPage = () => {
                         withHandle
                         className="w-[5px] bg-gray-500 hover:bg-gray-700 cursor-row-resize"
                     />
-
-                    <ResizablePanel defaultSize={0} maxSize={50} className='h-full'>
+                    <ResizablePanel ref={terminalPanelRef} defaultSize={0} maxSize={50} className='h-full'>
                         <Terminal output={output} />
                     </ResizablePanel>
                 </ResizablePanelGroup>
